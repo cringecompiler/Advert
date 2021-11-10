@@ -10,9 +10,11 @@ class Base:
 
 class ColorizeMixin:
     """миксин для изменения цвета вывода в консоль"""
+    repr_color_code = 33
+
     def __repr__(self):
         ad_text = super().__repr__()
-        return f"\033[0;{self.repr_color_code};49m{ad_text}"
+        return f'\033[0;{ColorizeMixin.repr_color_code};49m{ad_text}'
 
 
 class Unpack:
@@ -24,13 +26,12 @@ class Unpack:
 
 class Advert(ColorizeMixin, Base):
     """основной класс"""
-    repr_color_code = 33
 
     def __init__(self, atr_dict):
         self._price = 0
         for key, value in atr_dict.items():
             if keyword.iskeyword(key):  # если название атрибута является ключевым словом
-                if type(value) == dict:
+                if isinstance(value, dict):
                     setattr(self, key + '_', Unpack(value))
             elif type(value) == dict:  # если значение атрибута - словарь
                 setattr(self, key, Unpack(value))
